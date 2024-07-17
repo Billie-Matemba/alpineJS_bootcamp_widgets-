@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlpineJS Bootcamp widgets</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="greet">
+        <h1>Greeting in three Language</h1>
+    <div x-data="greets">
+        <input type="text" x-model="name" class="nameInput" placeholder="Enter your name">
+        <button @click="greet" class="greetButton">Greet</button>
+        <select x-model="selectedLanguage" class="languageSwitcher">
+            <option value="en">English</option>
+            <option value="sh">Shona</option>
+            <option value="ts">Tswana</option>
+        </select>
+        <div x-text="greetingMessage" class="greetingMessage"></div>
+    </div>
+    
+    <script>
+        function greets() {
+            return {
+                name: '',
+                greetingMessage: '',
+                selectedLanguage: 'en',
+                translations: {
+                    en: { greeting: 'Hello' },
+                    sh: { greeting: 'Hesi' },
+                    ts: { greeting: 'Dumela' }
+                },
+                greet() {
+                if (this.name.trim() !== '') {
+                    this.greetingMessage = this.greetFunction(this.name);
+                } else {
+                    this.greetingMessage = 'Please enter your name.';
+                }
+            },
+            greetFunction(name) {
+                return `${this.translations[this.selectedLanguage].greeting}, ${name}`;
+            }
+        }
+    }
+    </script>
+    </div>
+    
+    <div>
+        <h1>Transport Fee according to shifts</h1>
+    <div x-data="transportFeeHandler">
+        <label>
+            <input type="radio" x-model="shift" value="morning">
+            Morning
+        </label>
+        <label>
+            <input type="radio" x-model="shift" value="afternoon">
+            Afternoon
+        </label>
+        <label>
+            <input type="radio" x-model="shift" value="nightshift">
+            Nightshift
+        </label>
+        <button @click="calculateFee">Get Transport Fee</button>
+        <div x-text="feeMessage"></div>
+    </div>
+    <div>
+<script>
+    function transportFeeHandler() {
+        return {
+            shift: '',
+            feeMessage: '',
+            calculateFee() {
+                this.feeMessage = transportFee(this.shift);
+            },  
+        };
+    }
+
+    function transportFee(shift) {
+        switch (shift) {
+            case 'morning':
+                return 'R20';
+            case 'afternoon':
+                return 'R10';
+            case 'nightshift':
+                return 'free';
+            default:
+                return 'Invalid shift';
+        }
+    }   
+</script>
+</div>
+<div>
+    <h1>Calculating the new phone bill</h1>
+<div x-data="phoneBill">
+    <input type="text" x-model="billString" placeholder="Enter: call, sms ...">
+    <button @click="calculateBill" class="bill-button">Calculate Total Bill</button>
+    <div x-text="billMessage" class="bill-message"></div>
+</div>
+
+
+<script>
+    function phoneBill() {
+        return {
+            count: 0,  
+            billString: '',   
+            billMessage: '',  
+            incrementCount() {
+                this.count++;  
+            },
+            
+            calculateBill() {
+                this.billMessage = totalPhoneBill(this.billString); }
+        };
+    }
+
+    function totalPhoneBill(phoneString) {
+        const phoneStringList = phoneString.split(', ');
+        const callRate = 2.75;
+        const smsRate = 0.65;
+        let total = 0;
+        
+        for (let i = 0; i < phoneStringList.length; i++) { 
+            const item = phoneStringList[i];
+            if (item === 'call') {
+                total += callRate;
+            } else if (item === 'sms') {
+                total += smsRate;
+            }
+        }
+        
+        return 'Total Bill: R' + total.toFixed(2); 
+    }
+</script>
+</div>
+<h1>Wordgame</h1>
+<div class="wordgame" x-data="{longest: '', shortest: '', totalLength: 0 }">
+    <input x-model="sentence" placeholder="Enter a sentence" style="width: 300px;" />
+    <button @click="longest = findLongestWord(sentence); shortest = findShortestWord(sentence); totalLength = calculateWordLengths(sentence)">Provide answer</button>
+    <p>Longest Word: <span x-text="longest"></span></p>
+    <p>Shortest Word: <span x-text="shortest"></span></p>
+    <p>Total Word Lengths: <span x-text="totalLength"></span></p>
+</div>
+
+<script>
+function findLongestWord(sentence) {
+    const words = sentence.split(' ');
+    return words.reduce((longest, current) => 
+        current.length >= longest.length ? current : longest, 
+        ""
+    );
+}
+
+function findShortestWord(sentence) {
+    const words = sentence.split(' ');
+    return words.reduce((shortest, current) => 
+        current.length <= shortest.length ? current : shortest, 
+        words[0]
+    );
+}
+
+function calculateWordLengths(sentence) {
+    const words = sentence.split(' ');
+    return words.reduce((total, current) => total + current.length, 0);
+}
+</script>
+
+</body>
+</html>
